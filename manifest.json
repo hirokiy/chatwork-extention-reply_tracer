@@ -1,0 +1,26 @@
+{
+	"manifest_version": 2,
+	"name": "Chatwork Reply Tracer",
+	"description": "",
+	"version": "0.1",
+	"icons": {
+		"16": "images/icon_16.png",
+		"48": "images/icon_48.png",
+		"128": "images/icon_128.png"
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"https://www.chatwork.com/*"
+			],
+			"css": ["css/main.css"],
+			"js": ["js/jquery.min.js", "js/base.js"],
+			"run_at": "document_end"
+		}
+	],
+	"permissions": [
+		"tabs",
+		"https://*/*",
+		"http://*/*"
+	]
+}
