@@ -7,6 +7,7 @@ var baseObj = (function () {
 	var cons,
 		init,
 		AjaxObj,
+		escapeHtml,
 		openArea,
 		closeArea,
 		createDom,
@@ -72,6 +73,16 @@ var baseObj = (function () {
 		});
 	};
 	
+	// sanitize
+	escapeHtml = function (str) {
+		str = str.replace(/&/g, '&amp;');
+		str = str.replace(/</g, '&lt;');
+		str = str.replace(/>/g, '&gt;');
+		str = str.replace(/"/g, '&quot;');
+		str = str.replace(/'/g, '&#39;');
+		return str;
+	}
+	
     // 表示エリア open close
 	openArea = function () {
 		tgt.addClass("active");
@@ -114,9 +125,9 @@ var baseObj = (function () {
 		stack.reverse();
 		for (i = 0, len = stack.length; i < len; i++) {
 			var dom = jQuery(document.createElement('div')).addClass(prefix + "-index"),
-				dombody = stack[i].body.replace(/\[rp aid=[0-9]+ to=[0-9]+-[0-9]+\]/g, "").replace(/\[To:[0-9]+\]/g, "");
+				dombody = escapeHtml(stack[i].body.replace(/\[rp aid=[0-9]+ to=[0-9]+-[0-9]+\]/g, "").replace(/\[To:[0-9]+\]/g, ""));
 			dom.html(
-				"<h3>" + stack[i].account.name + "</h3>"
+				"<h3>" + escapeHtml(stack[i].account.name) + "</h3>"
 					+ '<pre><div class="' + prefix + '-index-text">' + dombody + '</div></pre>'
 					+ '<div class="' + prefix + '-index-postlink"><a href="https://www.chatwork.com/#!rid' + rid + '-' + stack[i].message_id + '" target="_blank">&raquo; この投稿を開く</a></div>'
 			);
@@ -125,9 +136,9 @@ var baseObj = (function () {
 		
 		// リプライ元のHTMLからindexを作成
 		var selfdom = jQuery(document.createElement('div')).addClass(prefix + "-index " + prefix + "-index-self"),
-			selfdombody = selfMsg.body.replace(/RE /g, "");
+			selfdombody = escapeHtml(selfMsg.body.replace(/RE /g, ""));
 		selfdom.html(
-			"<h3>" + selfMsg.name + "</h3>" +
+			"<h3>" + escapeHtml(selfMsg.name) + "</h3>" +
 				'<pre><div class="' + prefix + '-index-text">' + selfdombody + "</div></pre>"
 		);
 		wrapper.append(selfdom);
@@ -146,7 +157,7 @@ var baseObj = (function () {
 	viewError = function (txt) {
 		var wrapper = jQuery(document.createElement('div')).addClass(prefix + "-wrapper " + prefix + "-wrapper-error"),
 			dom = jQuery(document.createElement('div')).addClass(prefix + "-index");
-		dom.html('<pre><div class="' + prefix + '-index-text">' + txt + '</div></pre>');
+		dom.html('<pre><div class="' + prefix + '-index-text">' + escapeHtml(txt) + '</div></pre>');
 		wrapper.append(dom);
 		contents.prepend(wrapper);
 		requestFlag = false;
